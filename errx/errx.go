@@ -33,7 +33,7 @@ func (e *Error) Error() string {
 	if e.Internal == nil {
 		return fmt.Sprintf("(%s) %s", e.Code, e.Message)
 	}
-	return fmt.Sprintf("(%s) %s | %s", e.Code, e.Message, e.Internal.Error())
+	return fmt.Sprintf("(%s) %s: %s", e.Code, e.Message, e.Internal.Error())
 }
 
 func (e *Error) Unwrap() error {
@@ -48,7 +48,7 @@ func New(code string, message string) *Error {
 	}
 }
 
-func Codex(code string, err error) *Error {
+func Wrap(code string, err error) *Error {
 	return New(code, "Internal server error").SetInternal(err)
 }
 
