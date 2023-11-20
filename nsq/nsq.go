@@ -2,6 +2,7 @@ package nsq
 
 import (
 	"fmt"
+	"time"
 
 	vnsq "github.com/nsqio/go-nsq"
 )
@@ -17,10 +18,12 @@ type ConfigProducer struct {
 }
 
 type ConfigConsumer struct {
-	Host        string `mapstructure:"host"`
-	Port        int    `mapstructure:"port"`
-	MaxAttempts uint16 `mapstructure:"max_attempts"`
-	MaxInFlight int    `mapstructure:"max_in_flight"`
+	Host                string        `mapstructure:"host"`
+	Port                int           `mapstructure:"port"`
+	MaxAttempts         uint16        `mapstructure:"max_attempts"`
+	MaxInFlight         int           `mapstructure:"max_in_flight"`
+	MaxRequeueDelay     time.Duration `mapstructure:"max_requeue_delay"`
+	DefaultRequeueDelay time.Duration `mapstructure:"default_requeue_delay"`
 }
 
 func NewProducer(conf ConfigProducer) (*vnsq.Producer, error) {
@@ -36,6 +39,8 @@ func NewConsumer(conf ConfigConsumer, topic, channel string, handler vnsq.Handle
 	c := vnsq.NewConfig()
 	c.MaxAttempts = conf.MaxAttempts
 	c.MaxInFlight = conf.MaxInFlight
+	c.MaxRequeueDelay = conf.MaxRequeueDelay
+	c.DefaultRequeueDelay = conf.DefaultRequeueDelay
 
 	consumer, err := vnsq.NewConsumer(topic, channel, c)
 	if err != nil {
