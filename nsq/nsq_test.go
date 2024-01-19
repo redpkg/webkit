@@ -3,6 +3,7 @@ package nsq_test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	vnsq "github.com/nsqio/go-nsq"
 	"github.com/redpkg/webkit/nsq"
@@ -12,10 +13,14 @@ import (
 func TestNewProducer(t *testing.T) {
 	assert := assert.New(t)
 
-	producer, err := nsq.NewProducer(nsq.ConfigProducer{
-		Host: "localhost",
-		Port: 4150,
-	})
+	conf := nsq.Config{
+		Producer: nsq.ConfigProducer{
+			Host: "localhost",
+			Port: 4150,
+		},
+	}
+
+	producer, err := nsq.NewProducer(conf)
 	if !assert.NoError(err) {
 		return
 	}
@@ -26,12 +31,18 @@ func TestNewProducer(t *testing.T) {
 func TestNewConsumer(t *testing.T) {
 	assert := assert.New(t)
 
-	consumer, err := nsq.NewConsumer(nsq.ConfigConsumer{
-		Host:        "localhost",
-		Port:        4161,
-		MaxAttempts: 5,
-		MaxInFlight: 1,
-	}, "test_topic", "test_channel", &handler{})
+	conf := nsq.Config{
+		Consumer: nsq.ConfigConsumer{
+			Host:                "localhost",
+			Port:                4161,
+			MaxAttempts:         5,
+			MaxInFlight:         1,
+			MaxRequeueDelay:     15 * time.Minute,
+			DefaultRequeueDelay: 90 * time.Second,
+		},
+	}
+
+	consumer, err := nsq.NewConsumer(conf, "test_topic", "test_channel", &handler{})
 	if !assert.NoError(err) {
 		return
 	}
