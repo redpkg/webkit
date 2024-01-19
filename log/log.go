@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -16,26 +15,26 @@ type Config struct {
 	Console bool   `mapstructure:"console"`
 }
 
-func (c Config) level() (zerolog.Level, error) {
+func (c Config) level() zerolog.Level {
 	switch strings.ToLower(c.Level) {
 	case "trace":
-		return zerolog.TraceLevel, nil
+		return zerolog.TraceLevel
 	case "debug":
-		return zerolog.DebugLevel, nil
+		return zerolog.DebugLevel
 	case "info":
-		return zerolog.InfoLevel, nil
+		return zerolog.InfoLevel
 	case "warn":
-		return zerolog.WarnLevel, nil
+		return zerolog.WarnLevel
 	case "error":
-		return zerolog.ErrorLevel, nil
+		return zerolog.ErrorLevel
 	case "fatal":
-		return zerolog.FatalLevel, nil
+		return zerolog.FatalLevel
 	case "panic":
-		return zerolog.PanicLevel, nil
-	case "off", "no", "":
-		return zerolog.Disabled, nil
+		return zerolog.PanicLevel
+	case "off", "no":
+		return zerolog.Disabled
 	default:
-		return zerolog.NoLevel, fmt.Errorf("unknown level string '%s'", c.Level)
+		return zerolog.InfoLevel
 	}
 }
 
@@ -46,11 +45,6 @@ var logger zerolog.Logger
 
 // Init log
 func Init(conf Config) error {
-	level, err := conf.level()
-	if err != nil {
-		return err
-	}
-
 	zerolog.InterfaceMarshalFunc = json.Marshal
 	zerolog.TimeFieldFormat = time.RFC3339
 
@@ -65,7 +59,7 @@ func Init(conf Config) error {
 	}
 
 	logger = zerolog.New(w).
-		Level(level).
+		Level(conf.level()).
 		With().
 		Timestamp().
 		Logger()

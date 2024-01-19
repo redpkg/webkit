@@ -32,6 +32,8 @@ func NewProducer(conf ConfigProducer) (*vnsq.Producer, error) {
 		return nil, err
 	}
 
+	producer.SetLoggerLevel(vnsq.LogLevelWarning)
+
 	return producer, nil
 }
 
@@ -47,6 +49,7 @@ func NewConsumer(conf ConfigConsumer, topic, channel string, handler vnsq.Handle
 		return nil, err
 	}
 
+	consumer.SetLoggerLevel(vnsq.LogLevelWarning)
 	consumer.AddHandler(handler)
 
 	if err = consumer.ConnectToNSQLookupd(buildAddress(conf.Host, conf.Port)); err != nil {
