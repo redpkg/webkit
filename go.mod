@@ -5,12 +5,12 @@ go 1.20
 require (
 	github.com/json-iterator/go v1.1.12
 	github.com/nsqio/go-nsq v1.1.0
-	github.com/redis/go-redis/v9 v9.3.0
-	github.com/rs/zerolog v1.31.0
-	github.com/stretchr/testify v1.8.4
-	gorm.io/driver/mysql v1.5.2
-	gorm.io/gorm v1.25.5
-	gorm.io/plugin/dbresolver v1.4.7
+	github.com/redis/go-redis/v9 v9.5.1
+	github.com/rs/zerolog v1.32.0
+	github.com/stretchr/testify v1.9.0
+	gorm.io/driver/mysql v1.5.6
+	gorm.io/gorm v1.25.8
+	gorm.io/plugin/dbresolver v1.5.1
 )
 
 require (

@@ -34,6 +34,7 @@ func New(conf Config) (*gorm.DB, error) {
 		SkipDefaultTransaction: true,
 		PrepareStmt:            true,
 		DisableAutomaticPing:   true,
+		TranslateError:         true,
 	})
 	if err != nil {
 		return nil, err
