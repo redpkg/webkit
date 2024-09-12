@@ -1,16 +1,16 @@
 module github.com/redpkg/webkit
 
-go 1.20
+go 1.22.7
 
 require (
 	github.com/json-iterator/go v1.1.12
 	github.com/nsqio/go-nsq v1.1.0
-	github.com/redis/go-redis/v9 v9.5.1
-	github.com/rs/zerolog v1.32.0
+	github.com/redis/go-redis/v9 v9.6.1
+	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
-	gorm.io/driver/mysql v1.5.6
-	gorm.io/gorm v1.25.9
-	gorm.io/plugin/dbresolver v1.5.1
+	gorm.io/driver/mysql v1.5.7
+	gorm.io/gorm v1.25.12
+	gorm.io/plugin/dbresolver v1.5.3
 )
 
 require (
@@ -27,5 +27,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
