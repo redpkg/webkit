@@ -25,12 +25,15 @@ func TestNew(t *testing.T) {
 			Username: "root",
 			Password: "password",
 		},
-		Database:        "test",
-		Timezone:        "UTC",
-		ConnMaxIdleTime: time.Minute * 5,
-		ConnMaxLifetime: time.Hour,
-		MaxIdleConns:    5,
-		MaxOpenConns:    10,
+		Database:         "mjc",
+		Timezone:         "UTC",
+		ConnMaxIdleTime:  time.Minute * 5,
+		ConnMaxLifetime:  time.Hour,
+		MaxIdleConns:     5,
+		MaxOpenConns:     10,
+		LogSlowThreshold: time.Second,
+		LogColorful:      true,
+		LogLevel:         "warn",
 	})
 	if !assert.NoError(err) {
 		return

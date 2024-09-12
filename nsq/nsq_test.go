@@ -18,6 +18,7 @@ func TestNewProducer(t *testing.T) {
 			Host: "localhost",
 			Port: 4150,
 		},
+		LogLevel: "warn",
 	}
 
 	producer, err := nsq.NewProducer(conf)
@@ -40,6 +41,7 @@ func TestNewConsumer(t *testing.T) {
 			MaxRequeueDelay:     15 * time.Minute,
 			DefaultRequeueDelay: 90 * time.Second,
 		},
+		LogLevel: "warn",
 	}
 
 	consumer, err := nsq.NewConsumer(conf, "test_topic", "test_channel", &handler{})

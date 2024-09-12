@@ -14,7 +14,7 @@ type Config struct {
 	LogLevel string         `mapstructure:"log_level"`
 }
 
-func (c Config) level() vnsq.LogLevel {
+func (c Config) logLevel() vnsq.LogLevel {
 	switch strings.ToLower(c.LogLevel) {
 	case "debug":
 		return vnsq.LogLevelDebug
@@ -49,7 +49,7 @@ func NewProducer(conf Config) (*vnsq.Producer, error) {
 		return nil, err
 	}
 
-	producer.SetLoggerLevel(conf.level())
+	producer.SetLoggerLevel(conf.logLevel())
 
 	return producer, nil
 }
@@ -66,7 +66,7 @@ func NewConsumer(conf Config, topic, channel string, handler vnsq.Handler) (*vns
 		return nil, err
 	}
 
-	consumer.SetLoggerLevel(conf.level())
+	consumer.SetLoggerLevel(conf.logLevel())
 	consumer.AddHandler(handler)
 
 	if err = consumer.ConnectToNSQLookupd(buildAddress(conf.Consumer.Host, conf.Consumer.Port)); err != nil {
