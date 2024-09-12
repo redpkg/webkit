@@ -25,7 +25,7 @@ func (c Config) level() vnsq.LogLevel {
 	case "error":
 		return vnsq.LogLevelError
 	default:
-		return vnsq.LogLevelInfo
+		return vnsq.LogLevelWarning
 	}
 }
 

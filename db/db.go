@@ -2,23 +2,29 @@ package db
 
 import (
 	"fmt"
+	"log"
 	"net/url"
+	"os"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
 )
 
 type Config struct {
-	Writer          ConfigNode    `mapstructure:"writer"`
-	Reader          ConfigNode    `mapstructure:"reader"`
-	Database        string        `mapstructure:"database"`
-	Timezone        string        `mapstructure:"timezone"`
-	ConnMaxIdleTime time.Duration `mapstructure:"conn_max_idle_time"`
-	ConnMaxLifetime time.Duration `mapstructure:"conn_max_lifetime"`
-	MaxIdleConns    int           `mapstructure:"max_idle_conns"`
-	MaxOpenConns    int           `mapstructure:"max_open_conns"`
+	Writer              ConfigNode    `mapstructure:"writer"`
+	Reader              ConfigNode    `mapstructure:"reader"`
+	Database            string        `mapstructure:"database"`
+	Timezone            string        `mapstructure:"timezone"`
+	ConnMaxIdleTime     time.Duration `mapstructure:"conn_max_idle_time"`
+	ConnMaxLifetime     time.Duration `mapstructure:"conn_max_lifetime"`
+	MaxIdleConns        int           `mapstructure:"max_idle_conns"`
+	MaxOpenConns        int           `mapstructure:"max_open_conns"`
+	LoggerSlowThreshold time.Duration `mapstructure:"logger_slow_threshold"`
+	LoggerColorful      bool          `mapstructure:"logger_colorful"`
+	LoggerLogLevel      string        `mapstructure:"logger_log_level"`
 }
 
 type ConfigNode struct {
@@ -30,8 +36,32 @@ type ConfigNode struct {
 
 // New database instance
 func New(conf Config) (*gorm.DB, error) {
+	logLevel := logger.Warn
+	switch conf.LoggerLogLevel {
+	case "silent", "off":
+		logLevel = logger.Silent
+	case "error":
+		logLevel = logger.Error
+	case "warn":
+		logLevel = logger.Warn
+	case "info":
+		logLevel = logger.Info
+	}
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold:             conf.LoggerSlowThreshold,
+			Colorful:                  conf.LoggerColorful,
+			IgnoreRecordNotFoundError: false,
+			ParameterizedQueries:      false,
+			LogLevel:                  logLevel,
+		},
+	)
+
 	db, err := gorm.Open(newDialector(conf.Writer, conf), &gorm.Config{
 		SkipDefaultTransaction: true,
+		Logger:                 newLogger,
 		PrepareStmt:            true,
 		DisableAutomaticPing:   true,
 		TranslateError:         true,

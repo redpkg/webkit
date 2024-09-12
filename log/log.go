@@ -31,10 +31,10 @@ func (c Config) level() zerolog.Level {
 		return zerolog.FatalLevel
 	case "panic":
 		return zerolog.PanicLevel
-	case "off", "no":
+	case "off":
 		return zerolog.Disabled
 	default:
-		return zerolog.InfoLevel
+		return zerolog.WarnLevel
 	}
 }
 
