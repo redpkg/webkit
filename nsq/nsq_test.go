@@ -36,10 +36,11 @@ func TestNewConsumer(t *testing.T) {
 		Consumer: nsq.ConfigConsumer{
 			Host:                "localhost",
 			Port:                4161,
+			DefaultRequeueDelay: 90 * time.Second,
+			MaxRequeueDelay:     15 * time.Minute,
 			MaxAttempts:         5,
 			MaxInFlight:         1,
-			MaxRequeueDelay:     15 * time.Minute,
-			DefaultRequeueDelay: 90 * time.Second,
+			HandlerConcurrency:  1,
 		},
 		LogLevel: "warn",
 	}

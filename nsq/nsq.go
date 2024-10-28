@@ -37,10 +37,11 @@ type ConfigProducer struct {
 type ConfigConsumer struct {
 	Host                string        `mapstructure:"host"`
 	Port                int           `mapstructure:"port"`
+	DefaultRequeueDelay time.Duration `mapstructure:"default_requeue_delay"`
+	MaxRequeueDelay     time.Duration `mapstructure:"max_requeue_delay"`
 	MaxAttempts         uint16        `mapstructure:"max_attempts"`
 	MaxInFlight         int           `mapstructure:"max_in_flight"`
-	MaxRequeueDelay     time.Duration `mapstructure:"max_requeue_delay"`
-	DefaultRequeueDelay time.Duration `mapstructure:"default_requeue_delay"`
+	HandlerConcurrency  int           `mapstructure:"handler_concurrency"`
 }
 
 func NewProducer(conf Config) (*vnsq.Producer, error) {
@@ -56,10 +57,10 @@ func NewProducer(conf Config) (*vnsq.Producer, error) {
 
 func NewConsumer(conf Config, topic, channel string, handler vnsq.Handler) (*vnsq.Consumer, error) {
 	c := vnsq.NewConfig()
+	c.DefaultRequeueDelay = conf.Consumer.DefaultRequeueDelay
+	c.MaxRequeueDelay = conf.Consumer.MaxRequeueDelay
 	c.MaxAttempts = conf.Consumer.MaxAttempts
 	c.MaxInFlight = conf.Consumer.MaxInFlight
-	c.MaxRequeueDelay = conf.Consumer.MaxRequeueDelay
-	c.DefaultRequeueDelay = conf.Consumer.DefaultRequeueDelay
 
 	consumer, err := vnsq.NewConsumer(topic, channel, c)
 	if err != nil {
@@ -67,7 +68,7 @@ func NewConsumer(conf Config, topic, channel string, handler vnsq.Handler) (*vns
 	}
 
 	consumer.SetLoggerLevel(conf.logLevel())
-	consumer.AddHandler(handler)
+	consumer.AddConcurrentHandlers(handler, conf.Consumer.HandlerConcurrency)
 
 	if err = consumer.ConnectToNSQLookupd(buildAddress(conf.Consumer.Host, conf.Consumer.Port)); err != nil {
 		return nil, err
