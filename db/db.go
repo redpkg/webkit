@@ -15,17 +15,18 @@ import (
 )
 
 type Config struct {
-	Writer           ConfigNode    `mapstructure:"writer"`
-	Reader           ConfigNode    `mapstructure:"reader"`
-	Database         string        `mapstructure:"database"`
-	Timezone         string        `mapstructure:"timezone"`
-	ConnMaxIdleTime  time.Duration `mapstructure:"conn_max_idle_time"`
-	ConnMaxLifetime  time.Duration `mapstructure:"conn_max_lifetime"`
-	MaxIdleConns     int           `mapstructure:"max_idle_conns"`
-	MaxOpenConns     int           `mapstructure:"max_open_conns"`
-	LogSlowThreshold time.Duration `mapstructure:"log_slow_threshold"`
-	LogColorful      bool          `mapstructure:"log_colorful"`
-	LogLevel         string        `mapstructure:"log_level"`
+	Writer                       ConfigNode    `mapstructure:"writer"`
+	Reader                       ConfigNode    `mapstructure:"reader"`
+	Database                     string        `mapstructure:"database"`
+	Timezone                     string        `mapstructure:"timezone"`
+	ConnMaxIdleTime              time.Duration `mapstructure:"conn_max_idle_time"`
+	ConnMaxLifetime              time.Duration `mapstructure:"conn_max_lifetime"`
+	MaxIdleConns                 int           `mapstructure:"max_idle_conns"`
+	MaxOpenConns                 int           `mapstructure:"max_open_conns"`
+	LogSlowThreshold             time.Duration `mapstructure:"log_slow_threshold"`
+	LogColorful                  bool          `mapstructure:"log_colorful"`
+	LogIgnoreRecordNotFoundError bool          `mapstructure:"log_ignore_record_not_found_error"`
+	LogLevel                     string        `mapstructure:"log_level"`
 }
 
 func (c Config) logLevel() logger.LogLevel {
@@ -57,7 +58,7 @@ func New(conf Config) (*gorm.DB, error) {
 		logger.Config{
 			SlowThreshold:             conf.LogSlowThreshold,
 			Colorful:                  conf.LogColorful,
-			IgnoreRecordNotFoundError: false,
+			IgnoreRecordNotFoundError: conf.LogIgnoreRecordNotFoundError,
 			ParameterizedQueries:      false,
 			LogLevel:                  conf.logLevel(),
 		},
